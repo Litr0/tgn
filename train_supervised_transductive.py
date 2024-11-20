@@ -205,7 +205,7 @@ for i in range(args.n_runs):
       # Backup memory at the end of training, so later we can restore it and use it for the validation on unseen nodes
       train_memory_backup = tgn.memory.backup_memory()
 
-    val_ap, val_auc = eval_abuse_prediction(tgn, decoder_head, val_data, val_data.edge_idxs, BATCH_SIZE, NUM_NEIGHBORS)
+    val_ap = eval_abuse_prediction(tgn, decoder_head, val_data, val_data.edge_idxs, BATCH_SIZE, NUM_NEIGHBORS)
     if USE_MEMORY:
       val_memory_backup = tgn.memory.backup_memory()
       # Restore memory we had at the end of training to be used when validating on new nodes. Also backup memory after validation so it can be used for testing (since test edges are strictly later in time than validation edges)
@@ -227,7 +227,7 @@ for i in range(args.n_runs):
 
     logger.info('epoch: {} took {:.2f}s'.format(epoch, total_epoch_time))
     logger.info('Epoch mean loss: {}'.format(np.mean(m_loss)))
-    logger.info('val auc: {}'.format(val_auc))
+    # logger.info('val auc: {}'.format(val_auc))
     logger.info('val ap: {}'.format(val_ap))
 
     # Early stopping
@@ -247,12 +247,12 @@ for i in range(args.n_runs):
     val_memory_backup = tgn.memory.backup_memory()
 
   ### Test
-  test_ap, test_auc = eval_abuse_prediction(tgn, decoder_head, test_data, test_data.edge_idxs, BATCH_SIZE, NUM_NEIGHBORS)
+  test_ap = eval_abuse_prediction(tgn, decoder_head, test_data, test_data.edge_idxs, BATCH_SIZE, NUM_NEIGHBORS)
 
   if USE_MEMORY:
     tgn.memory.restore_memory(val_memory_backup)
 
-  logger.info('Test statistics: auc: {}, ap: {}'.format(test_auc, test_ap))
+  logger.info('Test statistics: ap: {}'.format(test_ap))
   # Save results for this run
   pickle.dump({
     "val_aps": val_aps,
