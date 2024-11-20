@@ -8,7 +8,6 @@ import numpy as np
 import pickle
 from pathlib import Path
 
-from evaluation.evaluation import eval_edge_prediction
 from evaluation.evaluation import eval_abuse_prediction
 from model.tgn import TGN
 from utils.utils import EarlyStopMonitor, RandEdgeSampler, get_neighbor_finder
@@ -206,7 +205,7 @@ for i in range(args.n_runs):
       # Backup memory at the end of training, so later we can restore it and use it for the validation on unseen nodes
       train_memory_backup = tgn.memory.backup_memory()
 
-    val_ap, val_auc = eval_abuse_prediction(model=tgn, negative_edge_sampler=val_rand_sampler, data=val_data, n_neighbors=NUM_NEIGHBORS)
+    val_ap, val_auc = eval_abuse_prediction(tgn, decoder_head, val_data, val_data.edge_idxs, BATCH_SIZE, NUM_NEIGHBORS)
     if USE_MEMORY:
       val_memory_backup = tgn.memory.backup_memory()
       # Restore memory we had at the end of training to be used when validating on new nodes. Also backup memory after validation so it can be used for testing (since test edges are strictly later in time than validation edges)
@@ -248,7 +247,7 @@ for i in range(args.n_runs):
     val_memory_backup = tgn.memory.backup_memory()
 
   ### Test
-  test_ap, test_auc = eval_edge_prediction(model=tgn, negative_edge_sampler=test_rand_sampler, data=test_data, n_neighbors=NUM_NEIGHBORS)
+  test_ap, test_auc = eval_abuse_prediction(tgn, decoder_head, test_data, test_data.edge_idxs, BATCH_SIZE, NUM_NEIGHBORS)
 
   if USE_MEMORY:
     tgn.memory.restore_memory(val_memory_backup)
