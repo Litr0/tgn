@@ -31,7 +31,7 @@ parser.add_argument('--patience', type=int, default=5, help='Patience for early 
 parser.add_argument('--n_runs', type=int, default=1, help='Number of runs')
 parser.add_argument('--drop_out', type=float, default=0.1, help='Dropout probability')
 parser.add_argument('--gpu', type=int, default=0, help='Idx for the gpu to use')
-parser.add_argument('--node_dim', type=int, default=100, help='Dimensions of the node embedding')
+parser.add_argument('--node_dim', type=int, default=172, help='Dimensions of the node embedding')  # Updated to match the temporal embedding dimension
 parser.add_argument('--time_dim', type=int, default=100, help='Dimensions of the time embedding')
 parser.add_argument('--backprop_every', type=int, default=1, help='Every how many batches to backprop')
 parser.add_argument('--use_memory', action='store_true', help='Whether to augment the model with a node memory')
