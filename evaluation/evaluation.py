@@ -74,3 +74,41 @@ def eval_node_classification(tgn, decoder, data, edge_idxs, batch_size, n_neighb
 
   auc_roc = roc_auc_score(data.labels, pred_prob)
   return auc_roc
+
+def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors):
+  pred_prob = np.zeros(len(data.sources))
+  num_instance = len(data.sources)
+  num_batch = math.ceil(num_instance / batch_size)
+
+  # Dictionary to store the last temporal embedding of each user
+  last_temporal_embeddings = {}
+
+  with torch.no_grad():
+    decoder.eval()
+    tgn.eval()
+    for k in range(num_batch):
+      s_idx = k * batch_size
+      e_idx = min(num_instance, s_idx + batch_size)
+
+      sources_batch = data.sources[s_idx: e_idx]
+      destinations_batch = data.destinations[s_idx: e_idx]
+      timestamps_batch = data.timestamps[s_idx:e_idx]
+      edge_idxs_batch = edge_idxs[s_idx: e_idx]
+
+      source_embedding, destination_embedding, _ = tgn.compute_temporal_embeddings(sources_batch,
+                                                                                   destinations_batch,
+                                                                                   destinations_batch,
+                                                                                   timestamps_batch,
+                                                                                   edge_idxs_batch,
+                                                                                   n_neighbors)
+      # Update the last temporal embedding for each user
+      for i, source in enumerate(sources_batch):
+        last_temporal_embeddings[source] = source_embedding[i].cpu().numpy()
+
+  # Predict the abuse label using the last temporal embedding of each user
+  for user, embedding in last_temporal_embeddings.items():
+    embedding_tensor = torch.tensor(embedding, dtype=torch.float, device=decoder.weight.device)
+    pred_prob[user] = decoder(embedding_tensor).sigmoid().cpu().numpy()
+
+  auc_roc = roc_auc_score(data.labels, pred_prob)
+  return auc_roc
