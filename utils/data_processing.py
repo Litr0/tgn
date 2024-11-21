@@ -60,10 +60,7 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
     node_features = np.random.rand(node_features.shape[0], node_features.shape[1])
 
   val_time, test_time = list(np.quantile(graph_df.ts, [0.70, 0.85]))
-
-  print("Val time: ", val_time)
-  print("Test time: ", test_time)
-
+  
   sources = graph_df.u.values
   destinations = graph_df.i.values
   edge_idxs = graph_df.idx.values
