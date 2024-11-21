@@ -152,6 +152,14 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
     new_node_test_data.n_interactions, new_node_test_data.n_unique_nodes))
   print("{} nodes were used for the inductive testing, i.e. are never seen during training".format(
     len(new_test_node_set)))
+  
+  print("All data labels:")
+  print("Full data labels:", len(set(full_data.labels)))
+  print("Train data labels:", len(set(train_data.labels)))
+  print("Validation data labels:", len(set(val_data.labels)))
+  print("Test data labels:", len(set(test_data.labels)))
+  print("New node validation data labels:", len(set(new_node_val_data.labels)))
+  print("New node test data labels:", len(set(new_node_test_data.labels)))
 
   return node_features, edge_features, full_data, train_data, val_data, test_data, \
          new_node_val_data, new_node_test_data
