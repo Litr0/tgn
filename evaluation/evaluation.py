@@ -106,12 +106,6 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
         last_temporal_embeddings[source] = source_embedding[i].cpu().numpy()
 
   # Predict the abuse label using the last temporal embedding of each user
-  print("Last temporal embeddings size: ", len(last_temporal_embeddings))
-  print("size in preb prob: ", len(data.sources))
-  print("first 5 users:\n ", list(last_temporal_embeddings.keys())[:5])
-  print("unique users: ", len(set(data.sources)))
-  print("data labels: ", data.labels)
-  print("unique data labels: ", len(set(data.labels)))
   for user, embedding in last_temporal_embeddings.items():
     embedding_tensor = torch.tensor(embedding, dtype=torch.float, device=decoder.weight.device)
     prediction = decoder(embedding_tensor).sigmoid().cpu().detach().numpy()
@@ -121,6 +115,5 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
         pred_prob[available_indices[0]] = prediction
     else:
       pred_prob[user] = prediction
-  print("unique values in pred_prob:\n ", len(np.unique(pred_prob)))
   auc_roc = roc_auc_score(data.labels, pred_prob)
   return auc_roc
