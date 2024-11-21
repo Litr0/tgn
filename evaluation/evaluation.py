@@ -121,7 +121,7 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
     else:
       pred_prob[user] = prediction
     
-    if prediction != 0:
+    if prediction > 0.5:
       print("User: ", user, "Prediction: ", prediction)
 
   print("unique values in pred_prob:\n ", len(np.unique(pred_prob)))
