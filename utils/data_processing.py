@@ -169,9 +169,9 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   print("Test data labels:", test_data_label_counts)
   print("New node validation data labels:", new_node_val_data_label_counts)
   print("New node test data labels:", new_node_test_data_label_counts)
-  
+
   # Ensure all data variables have at least 2 labels
-  while len(train_data_label_counts) < 2 and len(val_data_label_counts) < 2 and len(test_data_label_counts) < 2 and len(new_node_val_data_label_counts) < 2 and len(new_node_test_data_label_counts) < 2:
+  while len(train_data_label_counts) < 2 or len(val_data_label_counts) < 2 or len(test_data_label_counts) < 2 or len(new_node_val_data_label_counts) < 2 or len(new_node_test_data_label_counts) < 2:
     print("Resampling due to insufficient label variety in one of the datasets.")
     
     new_test_node_set = set(random.sample(sorted(test_node_set), int(0.1 * n_total_unique_nodes)))
