@@ -63,7 +63,7 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
 
   # For steam_2017_new, we use different time splits
   if dataset_name == "steam_2017_new":
-    val_time, test_time = list(np.quantile(graph_df.ts, [0.90, 0.30]))
+    val_time, test_time = list(np.quantile(graph_df.ts, [0.90, 0.15]))
 
   print("Validation time: ", val_time)
   print("Test time: ", test_time)
