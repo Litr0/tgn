@@ -154,15 +154,55 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   print("{} nodes were used for the inductive testing, i.e. are never seen during training".format(
     len(new_test_node_set)))
   
-  print("All data labels:")
-  full_data_label_counts = Counter(full_data.labels)
-  train_data_label_counts = Counter(train_data.labels)
-  val_data_label_counts = Counter(val_data.labels)
-  test_data_label_counts = Counter(test_data.labels)
-  new_node_val_data_label_counts = Counter(new_node_val_data.labels)
-  new_node_test_data_label_counts = Counter(new_node_test_data.labels)
+  # Ensure all data variables have at least 2 labels
+  while len(train_data_label_counts) < 2 and len(val_data_label_counts) < 2 and len(test_data_label_counts) < 2 and len(new_node_val_data_label_counts) < 2 and len(new_node_test_data_label_counts) < 2:
+    print("Resampling due to insufficient label variety in one of the datasets.")
+    
+    new_test_node_set = set(random.sample(sorted(test_node_set), int(0.1 * n_total_unique_nodes)))
+    new_test_source_mask = graph_df.u.map(lambda x: x in new_test_node_set).values
+    new_test_destination_mask = graph_df.i.map(lambda x: x in new_test_node_set).values
+    observed_edges_mask = np.logical_and(~new_test_source_mask, ~new_test_destination_mask)
+    train_mask = np.logical_and(timestamps <= val_time, observed_edges_mask)
+    
+    train_data = Data(sources[train_mask], destinations[train_mask], timestamps[train_mask],
+                      edge_idxs[train_mask], labels[train_mask])
+    
+    train_node_set = set(train_data.sources).union(train_data.destinations)
+    new_node_set = node_set - train_node_set
+    
+    if different_new_nodes_between_val_and_test:
+      n_new_nodes = len(new_test_node_set) // 2
+      val_new_node_set = set(list(new_test_node_set)[:n_new_nodes])
+      test_new_node_set = set(list(new_test_node_set)[n_new_nodes:])
+      edge_contains_new_val_node_mask = np.array(
+        [(a in val_new_node_set or b in val_new_node_set) for a, b in zip(sources, destinations)])
+      edge_contains_new_test_node_mask = np.array(
+        [(a in test_new_node_set or b in test_new_node_set) for a, b in zip(sources, destinations)])
+      new_node_val_mask = np.logical_and(val_mask, edge_contains_new_val_node_mask)
+      new_node_test_mask = np.logical_and(test_mask, edge_contains_new_test_node_mask)
+    else:
+      edge_contains_new_node_mask = np.array(
+        [(a in new_node_set or b in new_node_set) for a, b in zip(sources, destinations)])
+      new_node_val_mask = np.logical_and(val_mask, edge_contains_new_node_mask)
+      new_node_test_mask = np.logical_and(test_mask, edge_contains_new_node_mask)
+    
+    val_data = Data(sources[val_mask], destinations[val_mask], timestamps[val_mask],
+                    edge_idxs[val_mask], labels[val_mask])
+    test_data = Data(sources[test_mask], destinations[test_mask], timestamps[test_mask],
+                     edge_idxs[test_mask], labels[test_mask])
+    new_node_val_data = Data(sources[new_node_val_mask], destinations[new_node_val_mask],
+                             timestamps[new_node_val_mask], edge_idxs[new_node_val_mask], labels[new_node_val_mask])
+    new_node_test_data = Data(sources[new_node_test_mask], destinations[new_node_test_mask],
+                              timestamps[new_node_test_mask], edge_idxs[new_node_test_mask], labels[new_node_test_mask])
+    
+    train_data_label_counts = Counter(train_data.labels)
+    val_data_label_counts = Counter(val_data.labels)
+    test_data_label_counts = Counter(test_data.labels)
+    new_node_val_data_label_counts = Counter(new_node_val_data.labels)
+    new_node_test_data_label_counts = Counter(new_node_test_data.labels)
 
-  print("Full data labels:", full_data_label_counts)
+  print("All data labels:")
+  
   print("Train data labels:", train_data_label_counts)
   print("Validation data labels:", val_data_label_counts)
   print("Test data labels:", test_data_label_counts)
