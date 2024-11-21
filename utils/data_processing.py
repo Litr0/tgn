@@ -217,13 +217,13 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
     new_node_val_data_label_counts = Counter(new_node_val_data.labels)
     new_node_test_data_label_counts = Counter(new_node_test_data.labels)
 
-  print("All data labels:")
+    print("All data labels:")
 
-  print("Train data labels:", train_data_label_counts)
-  print("Validation data labels:", val_data_label_counts)
-  print("Test data labels:", test_data_label_counts)
-  print("New node validation data labels:", new_node_val_data_label_counts)
-  print("New node test data labels:", new_node_test_data_label_counts)
+    print("Train data labels:", train_data_label_counts)
+    print("Validation data labels:", val_data_label_counts)
+    print("Test data labels:", test_data_label_counts)
+    print("New node validation data labels:", new_node_val_data_label_counts)
+    print("New node test data labels:", new_node_test_data_label_counts)
 
   return node_features, edge_features, full_data, train_data, val_data, test_data, \
          new_node_val_data, new_node_test_data
