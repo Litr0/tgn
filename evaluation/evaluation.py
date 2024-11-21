@@ -113,12 +113,16 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
   print("data labels: ", data.labels)
   for user, embedding in last_temporal_embeddings.items():
     embedding_tensor = torch.tensor(embedding, dtype=torch.float, device=decoder.weight.device)
+    prediction = decoder(embedding_tensor).sigmoid().cpu().detach().numpy()
     if user >= len(pred_prob):
       available_indices = np.where(pred_prob == 0)[0]
       if len(available_indices) > 0:
-        pred_prob[available_indices[0]] = decoder(embedding_tensor).sigmoid().cpu().detach().numpy()
+        pred_prob[available_indices[0]] = prediction
     else:
-      pred_prob[user] = decoder(embedding_tensor).sigmoid().cpu().detach().numpy()
+      pred_prob[user] = prediction
+    
+    if prediction != 0:
+      print("User: ", user, "Prediction: ", prediction)
 
   auc_roc = roc_auc_score(data.labels, pred_prob)
   return auc_roc
