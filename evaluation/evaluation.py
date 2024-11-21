@@ -109,7 +109,6 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
   print("Last temporal embeddings size: ", len(last_temporal_embeddings))
   print("size in pred prob: ", len(data.sources))
   print("first 5 users:\n ", list(last_temporal_embeddings.keys())[:5])
-  
   missing_users_count = 0
   for user, embedding in last_temporal_embeddings.items():
     if user < len(pred_prob):
@@ -119,6 +118,5 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
       missing_users_count += 1
 
   print("Number of users not in the index: ", missing_users_count)
-
   auc_roc = roc_auc_score(data.labels, pred_prob)
   return auc_roc
