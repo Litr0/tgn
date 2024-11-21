@@ -99,11 +99,11 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
                     edge_idxs[train_mask], labels[train_mask])
   
   print("First 5 rows of train data:")
-  print("Sources:", train_data.sources[:5])
-  print("Destinations:", train_data.destinations[:5])
-  print("Timestamps:", train_data.timestamps[:5])
-  print("Edge indices:", train_data.edge_idxs[:5])
-  print("Labels:", train_data.labels[:5])
+  print("Sources:", train_data.sources[-5:])
+  print("Destinations:", train_data.destinations[-5:])
+  print("Timestamps:", train_data.timestamps[-5:])
+  print("Edge indices:", train_data.edge_idxs[-5:])
+  print("Labels:", train_data.labels[-5:])
 
   # define the new nodes sets for testing inductiveness of the model
   train_node_set = set(train_data.sources).union(train_data.destinations)
