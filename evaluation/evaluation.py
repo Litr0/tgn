@@ -124,6 +124,6 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
     if prediction != 0:
       print("User: ", user, "Prediction: ", prediction)
 
-  print("unique values in pred_prob:\n ", np.unique(pred_prob))
+  print("unique values in pred_prob:\n ", len(np.unique(pred_prob)))
   auc_roc = roc_auc_score(data.labels, pred_prob)
   return auc_roc
