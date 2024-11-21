@@ -109,6 +109,7 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
   print("Last temporal embeddings size: ", len(last_temporal_embeddings))
   print("size in preb prob: ", len(data.sources))
   print("first 5 users:\n ", list(last_temporal_embeddings.keys())[:5])
+  print("unique users: ", len(set(data.sources)))
   for user, embedding in last_temporal_embeddings.items():
     embedding_tensor = torch.tensor(embedding, dtype=torch.float, device=decoder.weight.device)
     pred_prob[user] = decoder(embedding_tensor).sigmoid().cpu().detach().numpy()
