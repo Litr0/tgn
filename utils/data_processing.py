@@ -154,6 +154,22 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   print("{} nodes were used for the inductive testing, i.e. are never seen during training".format(
     len(new_test_node_set)))
   
+
+  print("All data labels:")
+  full_data_label_counts = Counter(full_data.labels)
+  train_data_label_counts = Counter(train_data.labels)
+  val_data_label_counts = Counter(val_data.labels)
+  test_data_label_counts = Counter(test_data.labels)
+  new_node_val_data_label_counts = Counter(new_node_val_data.labels)
+  new_node_test_data_label_counts = Counter(new_node_test_data.labels)
+
+  print("Full data labels:", full_data_label_counts)
+  print("Train data labels:", train_data_label_counts)
+  print("Validation data labels:", val_data_label_counts)
+  print("Test data labels:", test_data_label_counts)
+  print("New node validation data labels:", new_node_val_data_label_counts)
+  print("New node test data labels:", new_node_test_data_label_counts)
+  
   # Ensure all data variables have at least 2 labels
   while len(train_data_label_counts) < 2 and len(val_data_label_counts) < 2 and len(test_data_label_counts) < 2 and len(new_node_val_data_label_counts) < 2 and len(new_node_test_data_label_counts) < 2:
     print("Resampling due to insufficient label variety in one of the datasets.")
@@ -202,7 +218,7 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
     new_node_test_data_label_counts = Counter(new_node_test_data.labels)
 
   print("All data labels:")
-  
+
   print("Train data labels:", train_data_label_counts)
   print("Validation data labels:", val_data_label_counts)
   print("Test data labels:", test_data_label_counts)
