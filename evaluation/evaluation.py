@@ -108,6 +108,7 @@ def eval_abuse_prediction(tgn, decoder, data, edge_idxs, batch_size, n_neighbors
   # Predict the abuse label using the last temporal embedding of each user
   print("Last temporal embeddings size: ", len(last_temporal_embeddings))
   print("size in preb prob: ", len(data.sources))
+  print(pred_prob[:5])
   for user, embedding in last_temporal_embeddings.items():
     embedding_tensor = torch.tensor(embedding, dtype=torch.float, device=decoder.weight.device)
     pred_prob[user] = decoder(embedding_tensor).sigmoid().cpu().detach().numpy()
