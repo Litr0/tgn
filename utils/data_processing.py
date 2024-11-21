@@ -123,6 +123,7 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   test_mask = timestamps > test_time
   
   if dataset_name == "steam_2017_new":
+    val_mask = np.logical_and(timestamps > test_time, timestamps <= val_time)
     test_mask = timestamps <= test_time
 
   if different_new_nodes_between_val_and_test:
