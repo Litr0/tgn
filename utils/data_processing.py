@@ -60,7 +60,7 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
     node_features = np.random.rand(node_features.shape[0], node_features.shape[1])
 
   val_time, test_time = list(np.quantile(graph_df.ts, [0.70, 0.85]))
-  
+
   sources = graph_df.u.values
   destinations = graph_df.i.values
   edge_idxs = graph_df.idx.values
@@ -95,6 +95,13 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
 
   train_data = Data(sources[train_mask], destinations[train_mask], timestamps[train_mask],
                     edge_idxs[train_mask], labels[train_mask])
+  
+  print("First 5 rows of train data:")
+  print("Sources:", train_data.sources[:5])
+  print("Destinations:", train_data.destinations[:5])
+  print("Timestamps:", train_data.timestamps[:5])
+  print("Edge indices:", train_data.edge_idxs[:5])
+  print("Labels:", train_data.labels[:5])
 
   # define the new nodes sets for testing inductiveness of the model
   train_node_set = set(train_data.sources).union(train_data.destinations)
