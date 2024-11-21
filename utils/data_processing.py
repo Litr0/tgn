@@ -59,11 +59,11 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   if randomize_features:
     node_features = np.random.rand(node_features.shape[0], node_features.shape[1])
 
-  val_time, test_time = list(np.quantile(graph_df.ts, [0.70, 0.85]))
+  val_time, test_time = list(np.quantile(graph_df.ts, [0.40, 0.55]))
 
-  # For steam_2017_new, we use different time splits
+  """ # For steam_2017_new, we use different time splits
   if dataset_name == "steam_2017_new":
-    val_time, test_time = list(np.quantile(graph_df.ts, [0.90, 0.15]))
+    val_time, test_time = list(np.quantile(graph_df.ts, [0.90, 0.15])) """
 
   print("Validation time: ", val_time)
   print("Test time: ", test_time)
@@ -100,9 +100,9 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   # used for inductiveness
   train_mask = np.logical_and(timestamps <= val_time, observed_edges_mask)
 
-  if dataset_name == "steam_2017_new":
+  """ if dataset_name == "steam_2017_new":
     # For steam_2017_new, we use different time splits
-    train_mask = np.logical_and(timestamps <= val_time, np.logical_and(timestamps > test_time, observed_edges_mask))
+    train_mask = np.logical_and(timestamps <= val_time, np.logical_and(timestamps > test_time, observed_edges_mask)) """
 
   train_data = Data(sources[train_mask], destinations[train_mask], timestamps[train_mask],
                     edge_idxs[train_mask], labels[train_mask])
@@ -122,9 +122,9 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   val_mask = np.logical_and(timestamps <= test_time, timestamps > val_time)
   test_mask = timestamps > test_time
   
-  if dataset_name == "steam_2017_new":
+  """ if dataset_name == "steam_2017_new":
     val_mask = np.logical_and(timestamps > test_time, timestamps <= val_time)
-    test_mask = timestamps <= test_time
+    test_mask = timestamps <= test_time """
 
   if different_new_nodes_between_val_and_test:
     n_new_nodes = len(new_test_node_set) // 2
