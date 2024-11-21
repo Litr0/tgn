@@ -178,6 +178,40 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   print("New node validation data labels:", new_node_val_data_label_counts)
   print("New node test data labels:", new_node_test_data_label_counts)
 
+  while len(train_data_label_counts) < 2 or len(val_data_label_counts) < 2 or len(test_data_label_counts) < 2 or len(new_node_val_data_label_counts) < 2 or len(new_node_test_data_label_counts) < 2:
+    # Shuffle the data to ensure balanced classes
+    combined = list(zip(train_data.sources, train_data.destinations, train_data.timestamps, train_data.edge_idxs, train_data.labels))
+    random.shuffle(combined)
+    train_data.sources, train_data.destinations, train_data.timestamps, train_data.edge_idxs, train_data.labels = zip(*combined)
+
+    combined = list(zip(val_data.sources, val_data.destinations, val_data.timestamps, val_data.edge_idxs, val_data.labels))
+    random.shuffle(combined)
+    val_data.sources, val_data.destinations, val_data.timestamps, val_data.edge_idxs, val_data.labels = zip(*combined)
+
+    combined = list(zip(test_data.sources, test_data.destinations, test_data.timestamps, test_data.edge_idxs, test_data.labels))
+    random.shuffle(combined)
+    test_data.sources, test_data.destinations, test_data.timestamps, test_data.edge_idxs, test_data.labels = zip(*combined)
+
+    combined = list(zip(new_node_val_data.sources, new_node_val_data.destinations, new_node_val_data.timestamps, new_node_val_data.edge_idxs, new_node_val_data.labels))
+    random.shuffle(combined)
+    new_node_val_data.sources, new_node_val_data.destinations, new_node_val_data.timestamps, new_node_val_data.edge_idxs, new_node_val_data.labels = zip(*combined)
+
+    combined = list(zip(new_node_test_data.sources, new_node_test_data.destinations, new_node_test_data.timestamps, new_node_test_data.edge_idxs, new_node_test_data.labels))
+    random.shuffle(combined)
+    new_node_test_data.sources, new_node_test_data.destinations, new_node_test_data.timestamps, new_node_test_data.edge_idxs, new_node_test_data.labels = zip(*combined)
+
+    train_data_label_counts = Counter(train_data.labels)
+    val_data_label_counts = Counter(val_data.labels)
+    test_data_label_counts = Counter(test_data.labels)
+    new_node_val_data_label_counts = Counter(new_node_val_data.labels)
+    new_node_test_data_label_counts = Counter(new_node_test_data.labels)
+
+    print("Train data labels:", train_data_label_counts)
+    print("Validation data labels:", val_data_label_counts)
+    print("Test data labels:", test_data_label_counts)
+    print("New node validation data labels:", new_node_val_data_label_counts)
+    print("New node test data labels:", new_node_test_data_label_counts)
+
   return node_features, edge_features, full_data, train_data, val_data, test_data, \
          new_node_val_data, new_node_test_data
 
