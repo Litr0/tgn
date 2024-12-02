@@ -163,7 +163,7 @@ class TGN(torch.nn.Module):
         self.update_memory(positives, self.memory.messages)
 
         assert torch.allclose(memory[positives], self.memory.get_memory(positives), atol=1e-3), \
-          "Something wrong in how the memory was updated"
+          "Something wrong in how the memory was updated " + "memory[positives]:" + str(memory[positives]) + " self.memory.get_memory(positives):" + str(self.memory.get_memory(positives))
 
         # Remove messages for the positives since we have already updated the memory using them
         self.memory.clear_messages(positives)
