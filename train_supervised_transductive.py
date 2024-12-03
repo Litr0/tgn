@@ -197,7 +197,7 @@ for i in range(args.n_runs):
                                                                                      edge_idxs_batch,
                                                                                      NUM_NEIGHBORS)
 
-      labels_batch_torch = torch.from_numpy(labels_batch).float().to(device)
+      labels_batch_torch = torch.from_numpy(labels_batch).float().to(device).view(-1, 1)  # Reshape to match the input size
       pred = decoder_head(source_embedding).sigmoid()
       decoder_loss = criterion(pred, labels_batch_torch)
       decoder_loss.backward()
