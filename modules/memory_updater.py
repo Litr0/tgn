@@ -33,11 +33,10 @@ class SequenceMemoryUpdater(MemoryUpdater):
     if len(unique_node_ids) <= 0:
       return self.memory.memory.data.clone(), self.memory.last_update.data.clone()
     
-    print("last update: " ,self.memory.get_last_update(unique_node_ids))
-    print("timestamps: ", timestamps)
-
-    assert (self.memory.get_last_update(unique_node_ids) <= timestamps).all().item(), "Trying to " \
-                                                                                     "update memory to time in the past"
+    assert_condition = (self.memory.get_last_update(unique_node_ids) <= timestamps)
+    if not assert_condition.all().item():
+      failing_ids = unique_node_ids[~assert_condition]
+      raise AssertionError(f"Trying to update memory to time in the past for node ids: {failing_ids}")
 
     updated_memory = self.memory.memory.data.clone()
     updated_memory[unique_node_ids] = self.memory_updater(unique_messages, updated_memory[unique_node_ids])
