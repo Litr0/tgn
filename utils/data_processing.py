@@ -59,12 +59,11 @@ def get_data(dataset_name, different_new_nodes_between_val_and_test=False, rando
   if randomize_features:
     node_features = np.random.rand(node_features.shape[0], node_features.shape[1])
 
-  val_time, test_time = list(np.quantile(graph_df.ts, [0.31, 0.46]))
-  # val_time, test_time = list(np.quantile(graph_df.ts, [0.70, 0.85]))
+  val_time, test_time = list(np.quantile(graph_df.ts, [0.70, 0.85]))
 
-  """ # For steam_2017_new, we use different time splits
+  # For steam_2017_new, we use different time splits
   if dataset_name == "steam_2017_new":
-    val_time, test_time = list(np.quantile(graph_df.ts, [0.90, 0.15])) """
+    val_time, test_time = list(np.quantile(graph_df.ts, [0.31, 0.46]))
 
   print("Validation time: ", val_time)
   print("Test time: ", test_time)
