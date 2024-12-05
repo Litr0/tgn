@@ -34,25 +34,36 @@ parser.add_argument('--patience', type=int, default=5, help='Patience for early 
 parser.add_argument('--n_runs', type=int, default=1, help='Number of runs')
 parser.add_argument('--drop_out', type=float, default=0.1, help='Dropout probability')
 parser.add_argument('--gpu', type=int, default=0, help='Idx for the gpu to use')
-parser.add_argument('--node_dim', type=int, default=172, help='Dimensions of the node embedding')  # Updated to match the temporal embedding dimension
+parser.add_argument('--node_dim', type=int, default=172, help='Dimensions of the node embedding')
 parser.add_argument('--time_dim', type=int, default=100, help='Dimensions of the time embedding')
-parser.add_argument('--backprop_every', type=int, default=1, help='Every how many batches to backprop')
+parser.add_argument('--backprop_every', type=int, default=1, 
+                    help='Every how many batches to backprop')
 parser.add_argument('--use_memory', action='store_true', help='Whether to augment the model with a node memory')
 parser.add_argument('--embedding_module', type=str, default="graph_attention", choices=[
   "graph_attention", "graph_sum", "identity", "time"], help='Type of embedding module')
 parser.add_argument('--message_function', type=str, default="identity", choices=[
   "mlp", "identity"], help='Type of message function')
-parser.add_argument('--aggregator', type=str, default="last", help='Type of message aggregator')
-parser.add_argument('--memory_update_at_end', action='store_true', help='Whether to update memory at the end or at the start of the batch')
-parser.add_argument('--message_dim', type=int, default=100, help='Dimensions of the messages')
-parser.add_argument('--memory_dim', type=int, default=172, help='Dimensions of the memory for each user')
-parser.add_argument('--different_new_nodes', action='store_true', help='Whether to use disjoint set of new nodes for train and val')
-parser.add_argument('--uniform', action='store_true', help='take uniform sampling from temporal neighbors')
-parser.add_argument('--randomize_features', action='store_true', help='Whether to randomize node features')
-parser.add_argument('--use_destination_embedding_in_message', action='store_true', help='Whether to use the embedding of the destination node as part of the message')
-parser.add_argument('--use_source_embedding_in_message', action='store_true', help='Whether to use the embedding of the source node as part of the message')
+parser.add_argument('--aggregator', type=str, default="last", 
+                    help='Type of message aggregator')
+parser.add_argument('--memory_update_at_end', action='store_true', 
+                    help='Whether to update memory at the end or at the start of the batch')
+parser.add_argument('--message_dim', type=int, default=100, 
+                    help='Dimensions of the messages')
+parser.add_argument('--memory_dim', type=int, default=172,
+                     help='Dimensions of the memory for each user')
+parser.add_argument('--different_new_nodes', action='store_true', 
+                    help='Whether to use disjoint set of new nodes for train and val')
+parser.add_argument('--uniform', action='store_true', 
+                    help='take uniform sampling from temporal neighbors')
+parser.add_argument('--randomize_features', action='store_true', 
+                    help='Whether to randomize node features')
+parser.add_argument('--use_destination_embedding_in_message', action='store_true', 
+                    help='Whether to use the embedding of the destination node as part of the message')
+parser.add_argument('--use_source_embedding_in_message', action='store_true', 
+                    help='Whether to use the embedding of the source node as part of the message')
 parser.add_argument('--n_neg', type=int, default=1)
-parser.add_argument('--use_validation', action='store_true', help='Whether to use a validation set')
+parser.add_argument('--use_validation', action='store_true', 
+                    help='Whether to use a validation set')
 parser.add_argument('--new_node', action='store_true', help='model new node')
 
 try:
@@ -142,12 +153,6 @@ for i in range(args.n_runs):
 
   tgn = tgn.to(device)
 
-  # Add a decoder head for binary abuse label prediction
-  decoder_head = torch.nn.Linear(NODE_DIM, 1)
-  criterion = torch.nn.BCELoss()
-  optimizer = torch.optim.Adam(list(tgn.parameters()) + list(decoder_head.parameters()), lr=LEARNING_RATE)
-  decoder_head = decoder_head.to(device)
-
   num_instance = len(train_data.sources)
   num_batch = math.ceil(num_instance / BATCH_SIZE)
   
@@ -160,6 +165,12 @@ for i in range(args.n_runs):
   tgn.eval()
   logger.info('TGN models loaded')
   logger.info('Start training node classification task')
+
+  # Add a decoder head for binary abuse label prediction
+  decoder_head = torch.nn.Linear(NODE_DIM, 1)
+  criterion = torch.nn.BCELoss()
+  optimizer = torch.optim.Adam(list(tgn.parameters()) + list(decoder_head.parameters()), lr=LEARNING_RATE)
+  decoder_head = decoder_head.to(device)
 
   val_aucs = []
   train_losses = []
