@@ -183,7 +183,7 @@ for i in range(args.n_runs):
     if USE_MEMORY:
       tgn.memory.__init_memory__()
 
-    tgn = tgn.train()
+    tgn = tgn.eval()
     decoder_head = decoder_head.train()
     loss = 0
     
