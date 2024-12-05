@@ -35,7 +35,7 @@ class SequenceMemoryUpdater(MemoryUpdater):
     
     assert_condition = (self.memory.get_last_update(unique_node_ids) <= timestamps)
     if not assert_condition.all().item():
-      failing_ids = unique_node_ids[assert_condition == False]
+      failing_ids = unique_node_ids[(assert_condition == False).nonzero(as_tuple=True)]
       raise AssertionError(f"Trying to update memory to time in the past for node ids: {failing_ids}")
 
     updated_memory = self.memory.memory.data.clone()
