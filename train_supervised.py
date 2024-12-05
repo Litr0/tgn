@@ -147,7 +147,7 @@ for i in range(args.n_runs):
             memory_update_at_start=not args.memory_update_at_end,
             embedding_module_type=args.embedding_module,
             message_function=args.message_function,
-            memory_updater_type=args.memory_updater
+            memory_updater_type=args.memory_updater,
             aggregator_type=args.aggregator, n_neighbors=NUM_NEIGHBORS,
             mean_time_shift_src=mean_time_shift_src, std_time_shift_src=std_time_shift_src,
             mean_time_shift_dst=mean_time_shift_dst, std_time_shift_dst=std_time_shift_dst,

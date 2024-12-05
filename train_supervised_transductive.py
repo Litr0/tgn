@@ -45,6 +45,8 @@ parser.add_argument('--message_function', type=str, default="identity", choices=
   "mlp", "identity"], help='Type of message function')
 parser.add_argument('--aggregator', type=str, default="last", 
                     help='Type of message aggregator')
+parser.add_argument('--memory_updater', type=str, default="gru", choices=[
+  "gru", "rnn"], help='Type of memory updater')
 parser.add_argument('--memory_update_at_end', action='store_true', 
                     help='Whether to update memory at the end or at the start of the batch')
 parser.add_argument('--message_dim', type=int, default=100, 
@@ -145,6 +147,7 @@ for i in range(args.n_runs):
             memory_update_at_start=not args.memory_update_at_end,
             embedding_module_type=args.embedding_module,
             message_function=args.message_function,
+            memory_updater_type=args.memory_updater,
             aggregator_type=args.aggregator, n_neighbors=NUM_NEIGHBORS,
             mean_time_shift_src=mean_time_shift_src, std_time_shift_src=std_time_shift_src,
             mean_time_shift_dst=mean_time_shift_dst, std_time_shift_dst=std_time_shift_dst,
